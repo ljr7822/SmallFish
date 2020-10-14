@@ -1,0 +1,26 @@
+{
+  "main/tabs/dash": {
+    "isFragment": true,
+    "asStarter": false,
+    "needLogin": false,
+    "pageUrl": "main/tabs/dash",
+    "clazName": "com.example.smallfish.ui.dashboard.DashboardFragment",
+    "id": 1387822992
+  },
+  "main/tabs/home": {
+    "isFragment": true,
+    "asStarter": true,
+    "needLogin": false,
+    "pageUrl": "main/tabs/home",
+    "clazName": "com.example.smallfish.ui.home.HomeFragment",
+    "id": 1679430916
+  },
+  "main/tabs/notification": {
+    "isFragment": true,
+    "asStarter": false,
+    "needLogin": false,
+    "pageUrl": "main/tabs/notification",
+    "clazName": "com.example.smallfish.ui.notifications.NotificationsFragment",
+    "id": 1990635240
+  }
+}
