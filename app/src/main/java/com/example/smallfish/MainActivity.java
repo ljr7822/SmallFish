@@ -12,10 +12,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.alibaba.fastjson.JSONObject;
-import com.example.libnetwork.ApiResponse;
-import com.example.libnetwork.GetRequest;
-import com.example.libnetwork.JsonCallBack;
 import com.example.smallfish.utils.NavGraphBuilder;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -40,15 +36,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         navView.setOnNavigationItemSelectedListener(this);
 
-        GetRequest<JSONObject> request = new GetRequest<JSONObject>("www.mooc.com");
-        request.execute();
-
-        request.execute(new JsonCallBack<JSONObject>() {
-            @Override
-            public void onSuccess(ApiResponse<JSONObject> response) {
-                super.onSuccess(response);
-            }
-        });
+//        GetRequest<JSONObject> request = new GetRequest<JSONObject>("www.mooc.com");
+//        request.execute();
+//
+//        request.execute(new JsonCallBack<JSONObject>() {
+//            @Override
+//            public void onSuccess(ApiResponse<JSONObject> response) {
+//                super.onSuccess(response);
+//            }
+//        });
     }
 
     @Override
