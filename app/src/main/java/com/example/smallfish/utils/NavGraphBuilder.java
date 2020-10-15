@@ -2,6 +2,7 @@ package com.example.smallfish.utils;
 
 import android.content.ComponentName;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.ActivityNavigator;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
@@ -9,6 +10,7 @@ import androidx.navigation.NavGraphNavigator;
 import androidx.navigation.NavigatorProvider;
 import androidx.navigation.fragment.FragmentNavigator;
 
+import com.example.smallfish.FixFragmentNavigator;
 import com.example.smallfish.model.Destination;
 
 import java.util.HashMap;
@@ -19,11 +21,14 @@ import java.util.HashMap;
  */
 public class NavGraphBuilder {
 
-    public static void build(NavController controller) {
+    public static void build(NavController controller, FragmentActivity activity, int containerId) {
         // 从NavController中提取出NavigatorProvider的hashMap对象，因为里面存储了两个navigator
         NavigatorProvider provider = controller.getNavigatorProvider();
 
-        FragmentNavigator fragmentNavigator = provider.getNavigator(FragmentNavigator.class);
+        // FragmentNavigator fragmentNavigator = provider.getNavigator(FragmentNavigator.class);
+        FixFragmentNavigator fragmentNavigator = new FixFragmentNavigator(activity, activity.getSupportFragmentManager(), containerId);
+        provider.addNavigator(fragmentNavigator);
+
         ActivityNavigator activityNavigator = provider.getNavigator(ActivityNavigator.class);
         //NavGraphNavigator也是页面路由导航器的一种，只不过他比较特殊。
         //它只为默认的展示页提供导航服务,但真正的跳转还是交给对应的navigator来完成的
