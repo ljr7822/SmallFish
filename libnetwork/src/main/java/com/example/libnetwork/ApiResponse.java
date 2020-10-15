@@ -1,7 +1,7 @@
 package com.example.libnetwork;
 
 /**
- * 返回结果包装类
+ * 功能：返回结果包装类
  *
  * @author iwen大大怪
  * Create to 2020/10/16 0:47
