@@ -17,5 +17,5 @@ public class Cache implements Serializable {
     @Ignore
     public String key;
 
-    public byte[] data;r
+    public byte[] data;
 }
