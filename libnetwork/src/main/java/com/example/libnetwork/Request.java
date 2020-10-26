@@ -1,10 +1,17 @@
 package com.example.libnetwork;
 
-import android.support.annotation.IntDef;
+import android.annotation.SuppressLint;
+import android.text.TextUtils;
+
+import androidx.annotation.IntDef;
+import androidx.arch.core.executor.ArchTaskExecutor;
+
+import com.example.libnetwork.cache.CacheManager;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -21,7 +28,7 @@ import okhttp3.Response;
  * @author iwen大大怪
  * Create to 2020/10/16 0:30
  */
-public abstract class Request<T, R> {
+public abstract class Request<T, R extends Request> implements Cloneable{
     protected String mUrl;
     protected HashMap<String, String> headers = new HashMap<>();
     protected HashMap<String, Object> mParams = new HashMap<>();
@@ -34,9 +41,10 @@ public abstract class Request<T, R> {
     public static final int NET_ONLY = 3;
     // 先访问网络，成功后缓存到本地
     public static final int NET_CACHE = 4;
-    private String mCacheKey;
+    private String cacheKey;
     private Type mType;
     private Class mClaz;
+    private int mCacheStrategy;
 
     @IntDef({CACHE_ONLY, CACHE_FIRST, NET_ONLY, NET_CACHE})
     public @interface CacheStrategy {
@@ -74,17 +82,22 @@ public abstract class Request<T, R> {
         return (R) this;
     }
 
-    public R cacheKey(String cacheKey) {
-        mCacheKey = cacheKey;
+    public R cacheStrategy(@CacheStrategy int cacheStrategy) {
+        mCacheStrategy = cacheStrategy;
         return (R) this;
     }
 
-    public R responseType(Type type){
+    public R cacheKey(String cacheKey) {
+        cacheKey = cacheKey;
+        return (R) this;
+    }
+
+    public R responseType(Type type) {
         mType = type;
         return (R) this;
     }
 
-    public R responseType(Class claz){
+    public R responseType(Class claz) {
         mClaz = claz;
         return (R) this;
     }
@@ -98,29 +111,54 @@ public abstract class Request<T, R> {
     }
 
     // 开始网络请求
-    public void execute(JsonCallBack<T> callBack) {
-        // 异步
-        getCall().enqueue(new Callback() {
-            // 失败的回调
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                ApiResponse<T> response = new ApiResponse<>();
-                response.message = e.getMessage();
-                callBack.onError(response);
-            }
-
-            // 成功的回调
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                ApiResponse<T> apiResponse = parseResponse(response, callBack);
-                // 业务层面判断是否成功
-                if (apiResponse.success) {
-                    callBack.onError(apiResponse);
-                } else {
-                    callBack.onSuccess(apiResponse);
+    @SuppressLint("RestrictedApi")
+    public void execute(final JsonCallBack<T> callBack) {
+        if (mCacheStrategy != NET_ONLY){
+            ArchTaskExecutor.getIOThreadExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                   ApiResponse<T> response = readCache();
+                   if (callBack!= null){
+                       callBack.onCacheSuccess(response);
+                   }
                 }
-            }
-        });
+            });
+        }
+        if (mCacheStrategy!=CACHE_ONLY){
+            // 异步
+            getCall().enqueue(new Callback() {
+                // 失败的回调
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    ApiResponse<T> response = new ApiResponse<>();
+                    response.message = e.getMessage();
+                    callBack.onError(response);
+                }
+
+                // 成功的回调
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    ApiResponse<T> apiResponse = parseResponse(response, callBack);
+                    // 业务层面判断是否成功
+                    if (apiResponse.success) {
+                        callBack.onError(apiResponse);
+                    } else {
+                        callBack.onSuccess(apiResponse);
+                    }
+                }
+            });
+        }
+    }
+
+    private ApiResponse<T> readCache() {
+        String key = TextUtils.isEmpty(cacheKey)?generateCacheKey():cacheKey;
+        Object cache = CacheManager.getCache(key);
+        ApiResponse<T> result = new ApiResponse<>();
+        result.status = 304;
+        result.message = "缓存获取成功";
+        result.body = (T) cache;
+        result.success = true;
+        return result;
     }
 
     private ApiResponse<T> parseResponse(Response response, JsonCallBack<T> callBack) {
@@ -132,18 +170,18 @@ public abstract class Request<T, R> {
         try {
             String content = response.body().string();
             if (success) {
-                if (callBack != null){
+                if (callBack != null) {
                     ParameterizedType type = (ParameterizedType) callBack.getClass().getGenericSuperclass();
                     Type argument = type.getActualTypeArguments()[0];
-                    result.body = (T) concert.convert(content,argument);
-                }else if (mType != null){
-                    result.body = (T) concert.convert(content,mType);
-                }else if (mClaz != null){
-                    result.body = (T) concert.convert(content,mClaz);
-                }else {
+                    result.body = (T) concert.convert(content, argument);
+                } else if (mType != null) {
+                    result.body = (T) concert.convert(content, mType);
+                } else if (mClaz != null) {
+                    result.body = (T) concert.convert(content, mClaz);
+                } else {
                     // TODO:打个日志
                 }
-            }else {
+            } else {
                 message = content;
             }
         } catch (Exception e) {
@@ -153,7 +191,21 @@ public abstract class Request<T, R> {
         result.success = success;
         result.status = status;
         result.message = message;
+
+        if (mCacheStrategy != NET_ONLY && result.success && result.body != null && result.body instanceof Serializable) {
+            saveCache(result.body);
+        }
         return result;
+    }
+
+    private void saveCache(T body) {
+        String key = TextUtils.isEmpty(cacheKey) ? generateCacheKey() : cacheKey;
+        CacheManager.save(key, body);
+    }
+
+    private String generateCacheKey() {
+        cacheKey = UrlCreator.createUrlFromParams(mUrl, mParams);
+        return cacheKey;
     }
 
     protected abstract okhttp3.Request generateRequest(okhttp3.Request.Builder builder);
@@ -164,7 +216,11 @@ public abstract class Request<T, R> {
         }
     }
 
+    // 同步
     public ApiResponse<T> execute() {
+        if (mCacheStrategy == CACHE_ONLY){
+            return readCache();
+        }
         try {
             Response response = getCall().execute();
             ApiResponse<T> result = parseResponse(response, null);
@@ -174,5 +230,4 @@ public abstract class Request<T, R> {
         }
         return null;
     }
-
 }

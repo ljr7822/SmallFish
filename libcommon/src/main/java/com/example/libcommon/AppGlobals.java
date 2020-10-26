@@ -1,4 +1,4 @@
-package com.example.smallfish.utils;
+package com.example.libcommon;
 
 import android.app.Application;
 
@@ -6,10 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * 获取Application对象
- *
- * @author iwen大大怪
- * Create to 2020/10/14 15:44
+ * 提供全局的Application对象实例
+ * author : Iwen大大怪
+ * create : 2020/10/26 21:50
  */
 public class AppGlobals {
     private static Application sApplication;
