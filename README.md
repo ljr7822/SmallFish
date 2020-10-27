@@ -26,3 +26,13 @@
 - Room数据库创建
 - Room实现数据缓存
 
+**第七次提交2020.10.27**
+- 创建各种的ben对象
+- 文章作者信息布局文件编写 使用dataBinding
+- 文章标签信息布局文件编写 使用dataBinding MaterialButton
+  - 注意：使用MaterialButton要将主题修改(在values/styles)parent="Theme.MaterialComponents.Light.NoActionBar"
+  - 复写样式，否则不会生效：<!--复写样式--><style name="materialButton" parent="Widget.MaterialComponents.Button">
+- 文章评论区域布局编写 使用dataBinding
+- 互动区域布局文件编写 使用dataBinding
+- 图片动态布局编写，不使用dataBinding,自己写一个类来设置图片大小
+- 创建像素工具类PixUtils,dp2px,获取屏幕宽度、获取屏幕高度
