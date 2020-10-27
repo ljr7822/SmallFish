@@ -1,6 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
+//        maven { url 'https://maven.aliyun.com/repository/public' }
+//如果上面的阿里云镜像不行，就尝试用下面的的试试。如果用下面的，上面的就注释掉。
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         google()
         jcenter()
     }
@@ -14,6 +17,9 @@ buildscript {
 
 allprojects {
     repositories {
+//        maven { url 'https://maven.aliyun.com/repository/public' }
+//如果上面的阿里云镜像不行，就尝试用下面的的试试。如果用下面的，上面的就注释掉。
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         google()
         jcenter()
         maven { url "https://jitpack.io" }

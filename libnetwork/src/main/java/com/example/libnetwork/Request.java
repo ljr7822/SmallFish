@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.arch.core.executor.ArchTaskExecutor;
 
 import com.example.libnetwork.cache.CacheManager;
@@ -229,5 +230,12 @@ public abstract class Request<T, R extends Request> implements Cloneable{
             e.printStackTrace();
         }
         return null;
+    }
+
+    // 重写clone方法
+    @NonNull
+    @Override
+    public Request clone() throws CloneNotSupportedException {
+        return (Request<T, R>) super.clone();
     }
 }

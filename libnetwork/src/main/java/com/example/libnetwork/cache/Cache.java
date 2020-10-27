@@ -1,7 +1,7 @@
 package com.example.libnetwork.cache;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
@@ -13,8 +13,8 @@ import java.io.Serializable;
  */
 @Entity(tableName = "cache")
 public class Cache implements Serializable {
-    @PrimaryKey
-    @Ignore
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
     public String key;
 
     public byte[] data;

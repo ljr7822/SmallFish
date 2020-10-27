@@ -15,9 +15,10 @@ import com.example.smallfish.FixFragmentNavigator;
 import com.example.smallfish.model.Destination;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
- * @author iwen大大怪
+ * author iwen大大怪
  * Create to 2020/10/14 16:03
  */
 public class NavGraphBuilder {
@@ -27,34 +28,40 @@ public class NavGraphBuilder {
         NavigatorProvider provider = controller.getNavigatorProvider();
 
         // FragmentNavigator fragmentNavigator = provider.getNavigator(FragmentNavigator.class);
+        // NavGraphNavigator也是页面路由导航器的一种，只不过他比较特殊。
+        // 它只为默认的展示页提供导航服务,但真正的跳转还是交给对应的navigator来完成的
+        NavGraph navGraph = new NavGraph(new NavGraphNavigator(provider));
+
+        //FragmentNavigator fragmentNavigator = provider.getNavigator(FragmentNavigator.class);
+        //fragment的导航此处使用我们定制的FixFragmentNavigator，底部Tab切换时 使用hide()/show(),而不是replace()
         FixFragmentNavigator fragmentNavigator = new FixFragmentNavigator(activity, activity.getSupportFragmentManager(), containerId);
         provider.addNavigator(fragmentNavigator);
 
         ActivityNavigator activityNavigator = provider.getNavigator(ActivityNavigator.class);
-        //NavGraphNavigator也是页面路由导航器的一种，只不过他比较特殊。
-        //它只为默认的展示页提供导航服务,但真正的跳转还是交给对应的navigator来完成的
-        NavGraph navGraph = new NavGraph(new NavGraphNavigator(provider));
+        // NavGraphNavigator也是页面路由导航器的一种，只不过他比较特殊。
+        // 它只为默认的展示页提供导航服务,但真正的跳转还是交给对应的navigator来完成的
+        // NavGraph navGraph = new NavGraph(new NavGraphNavigator(provider));
 
         HashMap<String, Destination> destConfig = AppConfig.getDestConfig();
-        for (Destination value : destConfig.values()) {
-            // 判断页面类型，再创建对像
-            if (value.isFragment()){
+        Iterator<Destination> iterator = destConfig.values().iterator();
+        while (iterator.hasNext()){
+            Destination node = iterator.next();
+            if (node.isFragment){
                 FragmentNavigator.Destination destination = fragmentNavigator.createDestination();
-                destination.setId(value.getId());
-                destination.setClassName(value.getClassName());
-                destination.addDeepLink(value.getPageUrl());
+                destination.setId(node.id);
+                destination.setClassName(node.className);
+                destination.addDeepLink(node.pageUrl);
                 navGraph.addDestination(destination);
             }else {
                 ActivityNavigator.Destination destination = activityNavigator.createDestination();
-                destination.setId(value.getId());
-                destination.setComponentName(new ComponentName(AppGlobals.getApplication().getPackageName(), value.getClassName()));
-                destination.addDeepLink(value.getPageUrl());
+                destination.setId(node.id);
+                destination.setComponentName(new ComponentName(AppGlobals.getApplication().getPackageName(), node.className));
+                destination.addDeepLink(node.pageUrl);
                 navGraph.addDestination(destination);
             }
-
             //给APP页面导航结果图 设置一个默认的展示页的id
-            if (value.isAsStarter()) {
-                navGraph.setStartDestination(value.getId());
+            if (node.asStarter) {
+                navGraph.setStartDestination(node.id);
             }
         }
         controller.setGraph(navGraph);

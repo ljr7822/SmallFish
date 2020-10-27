@@ -15,6 +15,15 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.smallfish.utils.NavGraphBuilder;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * App 主页 入口
+ * <p>
+ * 1.底部导航栏 使用AppBottomBar 承载
+ * 2.内容区域 使用WindowInsetsNavHostFragment 承载
+ * <p>
+ * 3.底部导航栏 和 内容区域的 切换联动 使用NavController驱动
+ * 4.底部导航栏 按钮个数和 内容区域destination个数。由注解处理器NavProcessor来收集,生成assetsdestination.json。而后我们解析它。
+ */
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     public NavController navController;
@@ -35,16 +44,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         NavGraphBuilder.build(navController,this,fragment.getId());
 
         navView.setOnNavigationItemSelectedListener(this);
-
-//        GetRequest<JSONObject> request = new GetRequest<JSONObject>("www.mooc.com");
-//        request.execute();
-//
-//        request.execute(new JsonCallBack<JSONObject>() {
-//            @Override
-//            public void onSuccess(ApiResponse<JSONObject> response) {
-//                super.onSuccess(response);
-//            }
-//        });
     }
 
     @Override

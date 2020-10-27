@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * 自定义view承载底部导航栏
  *
- * @author iwen大大怪
+ * author iwen大大怪
  * Create to 2020/10/14 16:31
  */
 public class AppBottomBar extends BottomNavigationView {
@@ -115,6 +115,6 @@ public class AppBottomBar extends BottomNavigationView {
         if (destination == null) {
             return -1;
         }
-        return destination.getId();
+        return destination.id;
     }
 }

@@ -1,7 +1,8 @@
 package com.example.libnetwork;
 
 /**
- * @author iwen大大怪
+ * 默认的jsonCallBack, 子类可选择性复写某一回调方法
+ * author iwen大大怪
  * Create to 2020/10/16 0:46
  */
 public abstract class JsonCallBack<T> {

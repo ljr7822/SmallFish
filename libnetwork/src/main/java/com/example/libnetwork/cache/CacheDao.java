@@ -23,8 +23,9 @@ public interface CacheDao {
     Cache getCache(String key);
 
     // 数据库删除
+    //只能传递对象昂,删除时根据Cache中的主键 来比对的
     @Delete
-    int delete(String key);
+    int delete(Cache cache);
 
     // 数据库更新
     @Update(onConflict = OnConflictStrategy.REPLACE)

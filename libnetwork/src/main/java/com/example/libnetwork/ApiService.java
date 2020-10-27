@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
- * 封装okhttp请求类
+ * 封装okhttp请求类 网络请求的构建类
  *
  * @author iwen大大怪
  * Create to 2020/10/16 0:03
@@ -83,6 +83,14 @@ public class ApiService {
             convert = new JsonConvert();
         }
         sConcert = convert;
-
     }
+
+    public static <T> GetRequest<T> get(String url) {
+        return new GetRequest<>(sBaseUrl + url);
+    }
+
+    public static <T> PostRequest<T> post(String url) {
+        return new PostRequest<>(sBaseUrl + url);
+    }
+
 }
