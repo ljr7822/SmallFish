@@ -1,6 +1,8 @@
 package com.example.smallfish.model;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 import java.io.Serializable;
 
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * author : Iwen大大怪
  * create : 2020/10/27 0:08
  */
-public class Ugc implements Serializable {
+public class Ugc extends BaseObservable implements Serializable {
 
     public int likeCount;
     public int shareCount;
@@ -18,6 +20,26 @@ public class Ugc implements Serializable {
     public boolean hasLiked;
     public boolean hasdiss;
     public boolean hasDissed;
+
+    @Bindable
+    public int getShareCount() {
+        return shareCount;
+    }
+
+    @Bindable
+    public boolean isHasdiss() {
+        return hasdiss;
+    }
+
+    @Bindable
+    public boolean isHasLiked() {
+        return hasLiked;
+    }
+
+    @Bindable
+    public boolean isHasFavorite() {
+        return hasFavorite;
+    }
 
     @Override
     public boolean equals(@Nullable Object obj) {

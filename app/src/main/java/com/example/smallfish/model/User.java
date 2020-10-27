@@ -3,6 +3,8 @@ package com.example.smallfish.model;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 import java.io.Serializable;
 
@@ -11,7 +13,7 @@ import java.io.Serializable;
  * author : Iwen大大怪
  * create : 2020/10/27 0:03
  */
-public class User implements Serializable {
+public class User extends BaseObservable implements Serializable {
 
     /**
      * id : 962
@@ -72,4 +74,14 @@ public class User implements Serializable {
                 && feedCount == newUser.feedCount
                 && hasFollow == newUser.hasFollow;
     }
+
+    @Bindable
+    public boolean isHasFollow() {
+        return hasFollow;
+    }
+
+//    public void setHasFollow(boolean hasFollow) {
+//        this.hasFollow = hasFollow;
+//        notifyPropertyChanged(com.mooc.ppjoke.BR._all);
+//    }
 }

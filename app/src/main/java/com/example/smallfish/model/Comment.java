@@ -1,6 +1,7 @@
 package com.example.smallfish.model;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.BaseObservable;
 
 import java.io.Serializable;
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
  * author : Iwen大大怪
  * create : 2020/10/27 0:06
  */
-public class Comment implements Serializable {
+public class Comment extends BaseObservable implements Serializable {
     public static final int COMMENT_TYPE_VIDEO = 3;
     public static final int COMMENT_TYPE_IMAGE_TEXT = 2;
     /**
@@ -59,5 +60,10 @@ public class Comment implements Serializable {
                 && (author != null && author.equals(newComment.author))
                 && (ugc != null && ugc.equals(newComment.ugc));
     }
-
+    public Ugc getUgc() {
+        if (ugc == null) {
+            ugc = new Ugc();
+        }
+        return ugc;
+    }
 }
