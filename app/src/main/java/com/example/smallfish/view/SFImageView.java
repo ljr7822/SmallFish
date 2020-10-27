@@ -17,6 +17,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.libcommon.PixUtils;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
 /**
  * author : Iwen大大怪
  * create : 2020/10/27 0:47
@@ -85,4 +87,18 @@ public class SFImageView extends AppCompatImageView {
         params.leftMargin = height > width ? PixUtils.dp2px(marginLeft) : 0;
         setLayoutParams(params);
     }
+
+    public void setBlurImageUrl(String coverUrl, int radius) {
+        Glide.with(this).load(coverUrl).override(50)
+                .transform(new BlurTransformation())
+                .dontAnimate()
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        setBackground(resource);
+
+                    }
+                });
+    }
 }
+

@@ -36,3 +36,7 @@
 - 互动区域布局文件编写 使用dataBinding
 - 图片动态布局编写，不使用dataBinding,自己写一个类来设置图片大小
 - 创建像素工具类PixUtils,dp2px,获取屏幕宽度、获取屏幕高度
+
+**第八次提交2020.10.27**
+- 编写视频类型布局资源文件:layout_player_view.xml
+- 视频数据绑定:ListPlayerView.java
