@@ -40,3 +40,4 @@
 **第八次提交2020.10.27**
 - 编写视频类型布局资源文件:layout_player_view.xml
 - 视频数据绑定:ListPlayerView.java
+  - 视频布局、高斯模糊背景、封面
